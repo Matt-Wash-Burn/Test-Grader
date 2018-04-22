@@ -384,7 +384,7 @@ def start():
     GPIO.setup(done, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
     GPIO.setup(reset, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
     print ('started')
-    cam = picamera.PiCamera()
+    #cam = picamera.PiCamera()
 
 
 
@@ -396,11 +396,11 @@ def SCAN(img):
     return lines, boxes, answers, image
 
 def GRADE(lines, boxes, answers, answerkey, weight, image):
-    finalscore, corrections = grade(answerKey, answers, weight)
+    finalscore, corrections = grade(answerkey, answers, weight)
     image = corrected(test1, lines, boxes, corrections)
     return image, finalscore
 
-def KEY(lines, boxes, answerkey, image):
+def KEY(lines, boxes, answerkey):
     weight = rubric(answerkey)
     return answerkey, weight
 
@@ -427,11 +427,14 @@ while True:
 
     #Key input PB
     if GPIO.input(29):
+        started = time.time()
         print "Key Accepted"
         GPIO.output(7, GPIO.HIGH)
         lines, boxes, answers, image = SCAN("autorun.jpg")
         answerkey, weight = KEY(lines, boxes, answers)
         GPIO.output(7, GPIO.LOW)
+        end = time.time()
+        print(end - started), "seconds elapsed"
 
 
     #Exam input PB
@@ -444,16 +447,16 @@ while True:
         GPIO.output(11, GPIO.LOW)
         exams.append(correct)
         end = time.time()
+        print(end - started), "seconds elapsed"
 
     #Done input PB
-    if GPIO.input(33):
+    if GPIO.input(35):
+        started = time.time()
         print "Done Accepted"
         GPIO.output(13, GPIO.HIGH)
         jpg2pdf(exams)
         GPIO.output(13, GPIO.LOW)
-        
+        end = time.time()
+        print(end - started), "seconds elapsed"
 
-    #appends the exams into a final results PDF
-
-    print(end - started), "seconds elapsed"
 
