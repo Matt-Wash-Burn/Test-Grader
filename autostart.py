@@ -409,7 +409,7 @@ def KEY(lines, boxes, answerkey, image):
   #  begin
 ##########################################
 start()
-started = time.time()
+
 
 key = transform(Image.open("autorun.jpg"))
 test1 = transform(Image.open("autorun1.jpg"))
@@ -436,22 +436,24 @@ while True:
 
     #Exam input PB
     if GPIO.input(31):
+        started = time.time()
         print "Exam Accepted"
         GPIO.output(11, GPIO.HIGH)
         lines, boxes, answers, image = SCAN("autorun1.jpg")
-        corrected, finalscore = GRADE(lines, boxes, answers, answerkey, weight, image)
+        correct, finalscore = GRADE(lines, boxes, answers, answerkey, weight, image)
         GPIO.output(11, GPIO.LOW)
-
+        exams.append(correct)
+        end = time.time()
 
     #Done input PB
     if GPIO.input(33):
         print "Done Accepted"
         GPIO.output(13, GPIO.HIGH)
+        jpg2pdf(exams)
         GPIO.output(13, GPIO.LOW)
         
 
     #appends the exams into a final results PDF
-    jpg2pdf(exams)
-    end = time.time()
+
     print(end - started), "seconds elapsed"
 
