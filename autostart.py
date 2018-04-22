@@ -1,6 +1,5 @@
 #GPIOstartup.py
 import RPi.GPIO as GPIO
-
 from PIL import Image, ImageFilter, ImageFont, ImageDraw, ImageOps
 from array import array
 ##import cv2 # OpenCV for perspective transform
@@ -384,7 +383,7 @@ def start():
     GPIO.setup(done, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
     GPIO.setup(reset, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
     print ('started')
-    #cam = picamera.PiCamera()
+cam = picamera.PiCamera()
 
 
 
@@ -459,4 +458,12 @@ while True:
         end = time.time()
         print(end - started), "seconds elapsed"
 
-
+    #Done input PB
+    if GPIO.input(33):
+        started = time.time()
+        print "taking picture..."
+        GPIO.output(15, GPIO.HIGH)
+        cam.capture("takeone.jpg")
+        GPIO.output(15, GPIO.LOW)
+        end = time.time()
+        print(end - started), "seconds elapsed"
